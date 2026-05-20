@@ -5,7 +5,10 @@ export default defineConfig({
   fullyParallel: true,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: 'html',
+  reporter: [
+  ['html'],
+  ['allure-playwright'],
+],
   use: {
     baseURL: 'http://eaapp.somee.com',
     trace: 'on-first-retry',

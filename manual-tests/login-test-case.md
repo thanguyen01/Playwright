@@ -57,7 +57,7 @@ Verify that a valid user can successfully log in to the EAEmployee application w
 
 ## Test Execution Date
 
-April 29, 2026
+May 19, 2026
 
 ## Screenshots
 
@@ -73,7 +73,7 @@ April 29, 2026
 ## Test Automation Command
 
 ```bash
-npx playwright test tests/login.spec.js
+npx playwright test tests/example.spec.js --grep "Login page"
 ```
 
 ## Related Test Cases
