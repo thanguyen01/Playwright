@@ -1,22 +1,39 @@
 {
-  "name": "playwright",
+  "name": "playwright-test-automation",
   "version": "1.0.0",
-  "description": "",
+  "description": "Comprehensive Playwright Test Automation Framework",
   "type": "module",
   "scripts": {
     "test": "playwright test",
     "test:headed": "playwright test --headed",
     "test:ui": "playwright test --ui",
+    "test:debug": "playwright test --debug",
     "test:report": "playwright show-report",
-    "test:allure": "playwright test --reporter=allure-playwright",
-    "allure:report": "allure generate allure-results -o allure-report --clean",
-    "allure:open": "allure open allure-report"
+    "test:smoke": "playwright test --grep @smoke",
+    "test:regression": "playwright test --grep @regression",
+    "test:critical": "playwright test --grep @critical",
+    "test:chrome": "playwright test --project=chromium",
+    "test:firefox": "playwright test --project=firefox",
+    "test:webkit": "playwright test --project=webkit",
+    "test:serial": "playwright test --workers=1",
+    "report:allure": "allure generate allure-results -o allure-report --clean",
+    "report:allure:open": "allure open allure-report",
+    "clean": "rm -rf test-results allure-results playwright-report .auth",
+    "clean:all": "npm run clean && rm -rf node_modules package-lock.json"
   },
-  "keywords": [],
+  "keywords": [
+    "playwright",
+    "testing",
+    "automation",
+    "e2e",
+    "api-testing"
+  ],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@playwright/test": "^1.60.0",
+    "@playwright/test": "^1.59.1",
+    "@types/node": "^20.10.0",
+    "dotenv": "^16.3.1",
     "allure-commandline": "^2.41.0",
     "allure-playwright": "^3.8.0"
   }

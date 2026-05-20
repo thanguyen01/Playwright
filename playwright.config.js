@@ -1,22 +1,76 @@
 import { defineConfig, devices } from '@playwright/test';
+import 'dotenv/config';
+
+const BASE_URL = process.env.BASE_URL || 'http://eaapp.somee.com';
+const CI = !!process.env.CI;
 
 export default defineConfig({
   testDir: './tests',
+  testMatch: '**/*.spec.js',
+  
+  /* Run tests in files in parallel */
   fullyParallel: true,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  
+  /* Fail the build on CI if you accidentally left test.only in the source code */
+  forbidOnly: !!CI,
+  
+  /* Retry on CI only */
+  retries: CI ? 2 : 0,
+  
+  /* Opt out of parallel tests on CI */
+  workers: CI ? 1 : undefined,
+  
+  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
-  ['html'],
-  ['allure-playwright'],
-],
-  use: {
-    baseURL: 'http://eaapp.somee.com',
-    trace: 'on-first-retry',
-    screenshot: 'only-on-failure',
-  },
-  projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-    { name: 'firefox',  use: { ...devices['Desktop Firefox'] } },
-    { name: 'webkit',   use: { ...devices['Desktop Safari'] } },
+    ['html', { outputFolder: 'playwright-report' }],
+    ['junit', { outputFile: 'test-results/junit.xml' }],
+    ['allure-playwright', { outputFolder: 'allure-results' }],
   ],
+  
+  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
+  use: {
+    /* Base URL to use in actions like `await page.goto('/')` */
+    baseURL: BASE_URL,
+    
+    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
+    trace: 'on-first-retry',
+    
+    /* Screenshot on failure */
+    screenshot: 'only-on-failure',
+    
+    /* Video on failure */
+    video: 'retain-on-failure',
+  },
+
+  /* Configure projects for major browsers */
+  projects: [
+    {
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'] },
+    },
+    {
+      name: 'firefox',
+      use: { ...devices['Desktop Firefox'] },
+    },
+    {
+      name: 'webkit',
+      use: { ...devices['Desktop Safari'] },
+    },
+  ],
+
+  /* Run your local dev server before starting the tests */
+  // webServer: {
+  //   command: 'npm run start',
+  //   url: 'http://127.0.0.1:3000',
+  //   reuseExistingServer: !process.env.CI,
+  // },
+
+  /* Timeout and other settings */
+  timeout: 30 * 1000,
+  expect: {
+    timeout: 5 * 1000,
+  },
+
+  /* Exit early on catastrophic failures in CI */
+  maxFailures: CI ? 10 : undefined,
 });

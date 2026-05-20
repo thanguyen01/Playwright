@@ -1,0 +1,61 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# Test Results and Reports
+test-results/
+test-results-*.json
+playwright-report/
+allure-results/
+allure-report/
+.allure/
+
+# Authentication and sensitive files
+.auth/
+.auth/*.json
+.env
+.env.local
+.env.*.local
+
+# IDE and Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.vs/
+
+# Playwright
+/tests/screenshots/
+/tests/videos/
+/tests/traces/
+
+# OS
+Thumbs.db
+.AppleDouble
+.LSOverride
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Temporary files
+.temp/
+tmp/
+temp/
+
+# Build artifacts
+dist/
+build/
+
+# Optional coverage
+coverage/
+.nyc_output/
+
+# Misc
+.cache/
