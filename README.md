@@ -26,11 +26,13 @@ A comprehensive, production-ready test automation framework built with [Playwrig
 ## 🔧 Installation
 
 1. **Clone or navigate to the project directory**
+
    ```bash
    cd /path/to/Playwright
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm ci
    # or
@@ -38,6 +40,7 @@ A comprehensive, production-ready test automation framework built with [Playwrig
    ```
 
 3. **Install Playwright browsers**
+
    ```bash
    npx playwright install
    ```
@@ -85,11 +88,9 @@ Main configuration in `playwright.config.js`:
 │   ├── APIHelper.js           # API testing helper
 │   └── helpers.js             # Common utilities and helpers
 ├── tests/                      # Test files
-│   ├── global-setup.js        # Global setup (authentication)
-│   ├── global-teardown.js     # Global teardown
-│   ├── login.spec.js          # Example smoke tests
-│   ├── dashboard.spec.js      # Example regression tests
-│   └── api.spec.js            # Example API tests
+│   ├── example.spec.js        # Example tests
+│   ├── api.spec.js            # API tests
+│   └── fixtures.js            # Test fixtures
 ├── test-data/                  # JSON test data
 │   └── users.json             # User test data
 ├── .auth/                      # Authentication storage (auto-generated)
@@ -106,41 +107,49 @@ Main configuration in `playwright.config.js`:
 ## 🧪 Running Tests
 
 ### Run All Tests
+
 ```bash
 npm test
 ```
 
 ### Run Tests in Headed Mode
+
 ```bash
 npm run test:headed
 ```
 
 ### Run Tests in UI Mode (Interactive)
+
 ```bash
 npm run test:ui
 ```
 
 ### Debug Tests
+
 ```bash
 npm run test:debug
 ```
 
 ### Run Smoke Tests Only
+
 ```bash
 npm run test:smoke
 ```
 
 ### Run Regression Tests Only
+
 ```bash
 npm run test:regression
 ```
 
 ### Run Critical Tests Only
+
 ```bash
 npm run test:critical
 ```
 
 ### Run Tests on Specific Browser
+
 ```bash
 npm run test:chrome     # Chromium
 npm run test:firefox    # Firefox
@@ -148,6 +157,7 @@ npm run test:webkit     # WebKit
 ```
 
 ### Run Tests Serially (No Parallelization)
+
 ```bash
 npm run test:serial
 ```
@@ -155,24 +165,29 @@ npm run test:serial
 ## 📊 Reports
 
 ### HTML Report
+
 ```bash
 npm run test:report
 ```
+
 Opens `playwright-report/index.html` in your default browser.
 
 ### Allure Report
 
 #### Generate and View Allure Report
+
 ```bash
 npm run report:allure:open
 ```
 
 #### Just Generate (without opening)
+
 ```bash
 npm run report:allure
 ```
 
 #### JUnit Results
+
 Generated automatically at `test-results/junit.xml` - useful for CI/CD systems like Jenkins.
 
 ## 🏗️ Creating Page Objects
@@ -180,7 +195,7 @@ Generated automatically at `test-results/junit.xml` - useful for CI/CD systems l
 Extend `BasePage` to create page-specific objects:
 
 ```javascript
-import { BasePage } from './BasePage.js';
+import { BasePage } from "./BasePage.js";
 
 export class MyPage extends BasePage {
   // Define selectors
@@ -198,17 +213,17 @@ export class MyPage extends BasePage {
 ## ✍️ Writing Tests
 
 ```javascript
-import { test, expect } from '../fixtures/customFixtures.js';
-import { MyPage } from '../pages/MyPage.js';
+import { test, expect } from "../fixtures/customFixtures.js";
+import { MyPage } from "../pages/MyPage.js";
 
-test.describe('My Tests @smoke', () => {
+test.describe("My Tests @smoke", () => {
   let myPage;
 
   test.beforeEach(async ({ page }) => {
     myPage = new MyPage(page);
   });
 
-  test('should do something @smoke', async () => {
+  test("should do something @smoke", async () => {
     await myPage.submit();
     expect(true).toBeTruthy();
   });
@@ -217,13 +232,13 @@ test.describe('My Tests @smoke', () => {
 
 ## 🔐 Authentication
 
-Tests automatically authenticate via `global-setup.js`:
+Authentication is configured through environment variables and test fixtures:
 
-1. **First Run**: Global setup logs in and saves session to `.auth/user.json`
-2. **Subsequent Runs**: Session is automatically loaded from saved file
-3. **Credentials**: Set via `TEST_USERNAME` and `TEST_PASSWORD` env vars
+- **Credentials**: Set via `TEST_USERNAME` and `TEST_PASSWORD` env vars
+- **Session Storage**: Stored in `.auth/user.json`
 
 To force re-authentication, delete `.auth/user.json`:
+
 ```bash
 rm .auth/user.json
 ```
@@ -233,14 +248,15 @@ rm .auth/user.json
 Use the `apiHelper` fixture for API testing:
 
 ```javascript
-test('should fetch users', async ({ apiHelper }) => {
-  const response = await apiHelper.get('/api/users');
+test("should fetch users", async ({ apiHelper }) => {
+  const response = await apiHelper.get("/api/users");
   expect(response.status).toBe(200);
   expect(Array.isArray(response.body)).toBeTruthy();
 });
 ```
 
 ### Supported Methods
+
 - `get(endpoint, options)`
 - `post(endpoint, data, options)`
 - `put(endpoint, data, options)`
@@ -251,15 +267,17 @@ test('should fetch users', async ({ apiHelper }) => {
 ## 📝 Test Data Management
 
 ### Load Test Data
-```javascript
-import { TestDataManager } from '../utils/helpers.js';
 
-const users = TestDataManager.loadTestData('users');
+```javascript
+import { TestDataManager } from "../utils/helpers.js";
+
+const users = TestDataManager.loadTestData("users");
 ```
 
 ### Test Utilities
+
 ```javascript
-import { TestUtils } from '../utils/helpers.js';
+import { TestUtils } from "../utils/helpers.js";
 
 // Generate random values
 TestUtils.generateRandomString(10);
@@ -267,7 +285,7 @@ TestUtils.generateRandomEmail();
 TestUtils.generateRandomNumber(1, 100);
 
 // Date/Time utilities
-TestUtils.formatDate(new Date(), 'YYYY-MM-DD');
+TestUtils.formatDate(new Date(), "YYYY-MM-DD");
 TestUtils.getTimestamp();
 
 // Retry with backoff
@@ -284,15 +302,16 @@ TestUtils.deepMerge(obj1, obj2);
 Tag tests for organized execution:
 
 ```javascript
-test('should work @smoke', async () => {});
-test('should work @regression', async () => {});
-test('should work @critical', async () => {});
-test('should work @smoke @critical', async () => {
+test("should work @smoke", async () => {});
+test("should work @regression", async () => {});
+test("should work @critical", async () => {});
+test("should work @smoke @critical", async () => {
   // This test will run with both smoke and critical
 });
 ```
 
 Run specific tags:
+
 ```bash
 npm run test:smoke       # @smoke
 npm run test:regression  # @regression
@@ -302,17 +321,20 @@ npm run test:critical    # @critical
 ## 🧹 Cleanup
 
 ### Clean Test Results and Reports
+
 ```bash
 npm run clean
 ```
 
 Removes:
+
 - `test-results/`
 - `allure-results/`
 - `playwright-report/`
 - `.auth/`
 
 ### Deep Clean (includes node_modules)
+
 ```bash
 npm run clean:all
 ```
@@ -330,6 +352,7 @@ The framework includes a complete GitHub Actions workflow (`.github/workflows/te
 5. ✅ Sends test summary to job summary
 
 **Required Secrets** (optional - uses defaults if not set):
+
 - `BASE_URL` - Application URL
 - `TEST_USERNAME` - Login username
 - `TEST_PASSWORD` - Login password
@@ -337,11 +360,13 @@ The framework includes a complete GitHub Actions workflow (`.github/workflows/te
 ### Running in CI
 
 The config automatically detects CI environment and:
+
 - Sets retries to 2
 - Uses 1 worker (no parallelization)
 - Fails on `test.only()`
 
 Set the `CI` environment variable:
+
 ```bash
 CI=true npm test
 ```
@@ -349,22 +374,27 @@ CI=true npm test
 ## 🐛 Debugging
 
 ### Run Single Test
+
 ```bash
-npx playwright test login.spec.js
+npx playwright test example.spec.js
 ```
 
 ### Run Test with Specific Name
+
 ```bash
 npx playwright test -g "should login"
 ```
 
 ### Debug Mode (Interactive Inspector)
+
 ```bash
 npm run test:debug
 ```
 
 ### View Traces
+
 Traces are automatically captured on first retry. View them:
+
 ```bash
 npx playwright show-trace test-results/trace.zip
 ```
@@ -372,27 +402,32 @@ npx playwright show-trace test-results/trace.zip
 ## 📚 Best Practices
 
 ### 1. **Selectors**
+
 - Use semantic selectors: `data-testid`, `name`, `placeholder`
 - Avoid fragile selectors: nth-child, hard-coded indices
 - Use locators when possible: `page.locator('...')`
 
 ### 2. **Waits**
+
 - Use explicit waits: `waitForElement()`, `waitForNavigation()`
 - Avoid `page.waitForTimeout()` unless absolutely necessary
 - Set appropriate timeouts (default: 30s)
 
 ### 3. **Test Organization**
+
 - One action per test when possible
 - Use `test.beforeEach()` for setup
 - Use `test.afterEach()` for cleanup
 - Group related tests in `test.describe()`
 
 ### 4. **Assertions**
+
 - Be specific: `expect(value).toBe(exact)`
 - Avoid assertions after navigation (can be flaky)
 - Use custom matchers for common checks
 
 ### 5. **Data Management**
+
 - Use test data files for complex scenarios
 - Generate unique data for tests: `TestUtils.generateRandomEmail()`
 - Clean up created data in `test.afterEach()` or `globalTeardown()`
@@ -407,21 +442,24 @@ npx playwright show-trace test-results/trace.zip
 ## 📞 Support & Troubleshooting
 
 ### Tests Not Running
+
 - Ensure Node.js 18+ is installed: `node --version`
 - Reinstall dependencies: `npm ci`
 - Reinstall Playwright browsers: `npx playwright install`
 
 ### Authentication Issues
+
 - Check credentials in `.env` file
-- Verify login selectors in `global-setup.js` match your app
 - Delete `.auth/user.json` and re-run to force re-authentication
 
 ### Report Generation Issues
+
 - For Allure: `npm install -g allure-commandline`
 - Check that test results exist: `ls allure-results/`
 - Verify Java is installed (required for Allure): `java --version`
 
 ### CI/CD Issues
+
 - Check GitHub Actions logs in your repository
 - Verify secrets are set correctly
 - Ensure `.env.example` is committed to repo (`.env` should not be)
@@ -442,6 +480,7 @@ Contributions are welcome! Please:
 ## 📊 Test Statistics
 
 Track your test coverage and execution:
+
 - View HTML reports for detailed execution logs
 - Check JUnit XML for CI integration
 - Use Allure reports for trend analysis
