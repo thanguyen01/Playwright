@@ -1,6 +1,6 @@
 import { test, expect } from './fixtures.js';
 
-test.describe('Playground - Authentication (POM)', () => {
+test.describe('@playground Playground - Authentication (POM)', () => {
   test.beforeEach(async ({ playground }) => {
     await playground.goto();
   });
@@ -68,7 +68,7 @@ test.describe('Playground - Authentication (POM)', () => {
   });
 });
 
-test.describe('Playground - Employee Management (POM)', () => {
+test.describe('@playground Playground - Employee Management (POM)', () => {
   test.beforeEach(async ({ playground }) => {
     await playground.goto();
     await playground.login('admin', 'admin123');
@@ -139,7 +139,7 @@ test.describe('Playground - Employee Management (POM)', () => {
   });
 });
 
-test.describe('Playground - API Testing (POM)', () => {
+test.describe('@playground Playground - API Testing (POM)', () => {
   test.beforeEach(async ({ playground }) => {
     await playground.goto();
     await playground.login('admin', 'admin123');

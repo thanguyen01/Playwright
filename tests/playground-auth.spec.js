@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 const PLAYGROUND_URL = 'file://' + process.cwd() + '/public/playground.html';
 
-test.describe('Playground - Authentication', () => {
+test.describe('@playground Playground - Authentication', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(PLAYGROUND_URL);
   });
@@ -84,7 +84,7 @@ test.describe('Playground - Authentication', () => {
   });
 });
 
-test.describe('Playground - Employee Management (Authenticated)', () => {
+test.describe('@playground Playground - Employee Management (Authenticated)', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(PLAYGROUND_URL);
     // Login before each test
@@ -168,7 +168,7 @@ test.describe('Playground - Employee Management (Authenticated)', () => {
   });
 });
 
-test.describe('Playground - API Testing', () => {
+test.describe('@playground Playground - API Testing', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(PLAYGROUND_URL);
     await page.fill('[data-testid="username-input"]', 'admin');

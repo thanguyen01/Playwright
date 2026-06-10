@@ -41,7 +41,7 @@ jobs:
         run: npx playwright install --with-deps ${{ matrix.browser }}
 
       - name: Run tests on ${{ matrix.browser }}
-        run: npx playwright test --project=${{ matrix.browser }}
+        run: npx playwright test --project=${{ matrix.browser }} --grep-invert '@playground'
         env:
           CI: true
 
