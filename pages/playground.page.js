@@ -1,44 +1,43 @@
+import { BasePage } from './base.page.js';
 import { expect } from '@playwright/test';
 
-export class PlaygroundPage {
+export class PlaygroundPage extends BasePage {
   constructor(page) {
-    this.page = page;
+    super(page);
+    
+    // Login Card
+    this.loginCard = page.locator('#login-card');
+    this.usernameInput = page.getByLabel('Username');
+    this.passwordInput = page.getByLabel('Password');
+    this.loginBtn = page.getByRole('button', { name: 'Sign In' });
+    this.resetBtn = page.getByRole('button', { name: 'Reset' });
+    this.usernameError = page.locator('#username-error');
+    this.passwordError = page.locator('#password-error');
+    this.loginAlert = page.locator('#login-alert');
+
+    // Logged In Content
+    this.loggedInContent = page.locator('#logged-in-content');
+    this.currentUserLabel = page.locator('#current-user');
+    this.logoutBtn = page.getByRole('button', { name: 'Logout' });
+
+    // Employee Management
+    this.empNameInput = page.locator('[data-testid="emp-name-input"]');
+    this.empDepartmentSelect = page.locator('[data-testid="emp-department-select"]');
+    this.empStatusSelect = page.locator('[data-testid="emp-status-select"]');
+    this.addEmployeeBtn = page.getByRole('button', { name: 'Add Employee' });
+    this.searchInput = page.getByPlaceholder('Search employees...');
+    this.searchBtn = page.getByRole('button', { name: 'Search' });
+    this.refreshBtn = page.getByRole('button', { name: 'Refresh' });
+    this.employeesTable = page.getByRole('table');
+    this.employeeAlert = page.locator('#employee-alert');
+
+    // API Testing
+    this.apiEndpointSelect = page.locator('[data-testid="api-endpoint-select"]');
+    this.apiCallBtn = page.getByRole('button', { name: 'Call API' });
+    this.apiResponse = page.locator('#api-response');
+    this.apiAlert = page.locator('#api-alert');
   }
 
-  // Login Card Elements
-  get loginCard() { return this.page.locator('#login-card'); }
-  get usernameInput() { return this.page.locator('#username'); }
-  get passwordInput() { return this.page.locator('#password'); }
-  get loginBtn() { return this.page.getByRole('button', { name: /sign in/i }); }
-  get resetBtn() { return this.page.getByRole('button', { name: /reset/i }); }
-  get usernameError() { return this.page.locator('#username-error'); }
-  get passwordError() { return this.page.locator('#password-error'); }
-  get loginAlert() { return this.page.locator('#login-alert'); }
-
-  // Logged In Content
-  get loggedInContent() { return this.page.locator('#logged-in-content'); }
-  get currentUserLabel() { return this.page.locator('#current-user'); }
-  get logoutBtn() { return this.page.getByRole('button', { name: /logout/i }); }
-
-  // Employee Management - scoped to employee card
-  get employeeCard() { return this.page.locator('text=Employee Management').first(); }
-  get empNameInput() { return this.page.locator('#emp-name'); }
-  get empDepartmentSelect() { return this.page.locator('#emp-department'); }
-  get empStatusSelect() { return this.page.locator('#emp-status'); }
-  get addEmployeeBtn() { return this.page.getByRole('button', { name: /add employee/i }); }
-  get searchInput() { return this.page.locator('#search-input'); }
-  get searchBtn() { return this.page.getByRole('button', { name: /search/i }); }
-  get refreshBtn() { return this.page.getByRole('button', { name: /refresh/i }); }
-  get employeesTable() { return this.page.getByRole('table'); }
-  get employeeAlert() { return this.page.locator('#employee-alert'); }
-
-  // API Testing
-  get apiEndpointSelect() { return this.page.locator('#api-endpoint'); }
-  get apiCallBtn() { return this.page.getByRole('button', { name: /call api/i }); }
-  get apiResponse() { return this.page.locator('#api-response'); }
-  get apiAlert() { return this.page.locator('#api-alert'); }
-
-  // Actions
   async goto() {
     const PLAYGROUND_URL = 'file://' + process.cwd() + '/public/playground.html';
     await this.page.goto(PLAYGROUND_URL);
@@ -57,10 +56,6 @@ export class PlaygroundPage {
   async fillLoginForm(username, password) {
     await this.usernameInput.fill(username);
     await this.passwordInput.fill(password);
-  }
-
-  async submitLoginForm() {
-    await this.loginBtn.click();
   }
 
   async resetLoginForm() {
