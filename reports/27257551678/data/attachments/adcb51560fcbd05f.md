@@ -1,0 +1,39 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: example.spec.js >> Home page >> has correct title
+- Location: tests/example.spec.js:9:3
+
+# Error details
+
+```
+Test timeout of 30000ms exceeded while running "beforeEach" hook.
+```
+
+```
+Error: page.goto: Test timeout of 30000ms exceeded.
+Call log:
+  - navigating to "http://eaapp.somee.com/", waiting until "load"
+
+```
+
+# Test source
+
+```ts
+  1  | export class BasePage {
+  2  |   constructor(page) {
+  3  |     this.page = page;
+  4  |   }
+  5  | 
+  6  |   async navigate(url) {
+> 7  |     await this.page.goto(url);
+     |                     ^ Error: page.goto: Test timeout of 30000ms exceeded.
+  8  |   }
+  9  | }
+  10 | 
+```
