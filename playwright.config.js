@@ -66,9 +66,9 @@ export default defineConfig({
   // },
 
   /* Timeout and other settings */
-  timeout: 30 * 1000,
+  timeout: CI ? 120 * 1000 : 30 * 1000, // Longer timeout for CI due to remote server
   expect: {
-    timeout: 5 * 1000,
+    timeout: CI ? 15 * 1000 : 5 * 1000,
   },
 
   /* Exit early on catastrophic failures in CI */
