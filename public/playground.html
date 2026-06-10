@@ -53,10 +53,10 @@
     <h1>🎯 Playwright Playground</h1>
 
     <!-- Login Section -->
-    <div class="card" id="login-card">
-      <h2>🔐 Login</h2>
+    <div class="card" id="login-card" role="region" aria-labelledby="login-title">
+      <h2 id="login-title">🔐 Login</h2>
       <div id="login-alert" class="alert"></div>
-      <form id="login-form">
+      <form id="login-form" role="form" aria-label="Login form">
         <label for="username">Username</label>
         <input type="text" id="username" name="username" placeholder="Enter username" data-testid="username-input" autocomplete="username">
         <div class="error-text" id="username-error">Username is required</div>
@@ -81,11 +81,11 @@
       </div>
 
       <!-- Employee Management -->
-      <div class="card">
-        <h2>👥 Employee Management</h2>
+      <div class="card" role="region" aria-labelledby="employee-title">
+        <h2 id="employee-title">👥 Employee Management</h2>
         <div id="employee-alert" class="alert"></div>
         
-        <form id="employee-form">
+        <form id="employee-form" role="form" aria-label="Employee form">
           <label for="emp-name">Name</label>
           <input type="text" id="emp-name" data-testid="emp-name-input" placeholder="Employee name">
           
@@ -132,8 +132,8 @@
       </div>
 
       <!-- API Testing Section -->
-      <div class="card">
-        <h2>🔌 API Testing</h2>
+      <div class="card" role="region" aria-labelledby="api-title">
+        <h2 id="api-title">🔌 API Testing</h2>
         <div id="api-alert" class="alert"></div>
         
         <label for="api-endpoint">API Endpoint</label>

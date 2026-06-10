@@ -7,10 +7,10 @@ export class PlaygroundPage {
 
   // Login Card Elements
   get loginCard() { return this.page.locator('#login-card'); }
-  get usernameInput() { return this.page.locator('[data-testid="username-input"]'); }
-  get passwordInput() { return this.page.locator('[data-testid="password-input"]'); }
-  get loginBtn() { return this.page.locator('[data-testid="login-btn"]'); }
-  get resetBtn() { return this.page.locator('[data-testid="reset-btn"]'); }
+  get usernameInput() { return this.page.locator('#username'); }
+  get passwordInput() { return this.page.locator('#password'); }
+  get loginBtn() { return this.page.getByRole('button', { name: /sign in/i }); }
+  get resetBtn() { return this.page.getByRole('button', { name: /reset/i }); }
   get usernameError() { return this.page.locator('#username-error'); }
   get passwordError() { return this.page.locator('#password-error'); }
   get loginAlert() { return this.page.locator('#login-alert'); }
@@ -18,24 +18,24 @@ export class PlaygroundPage {
   // Logged In Content
   get loggedInContent() { return this.page.locator('#logged-in-content'); }
   get currentUserLabel() { return this.page.locator('#current-user'); }
-  get logoutBtn() { return this.page.locator('[data-testid="logout-btn"]'); }
+  get logoutBtn() { return this.page.getByRole('button', { name: /logout/i }); }
 
-  // Employee Management
+  // Employee Management - scoped to employee card
   get employeeCard() { return this.page.locator('text=Employee Management').first(); }
-  get empNameInput() { return this.page.locator('[data-testid="emp-name-input"]'); }
-  get empDepartmentSelect() { return this.page.locator('[data-testid="emp-department-select"]'); }
-  get empStatusSelect() { return this.page.locator('[data-testid="emp-status-select"]'); }
-  get addEmployeeBtn() { return this.page.locator('[data-testid="add-employee-btn"]'); }
-  get searchInput() { return this.page.locator('[data-testid="search-input"]'); }
-  get searchBtn() { return this.page.locator('[data-testid="search-btn"]'); }
-  get refreshBtn() { return this.page.locator('[data-testid="refresh-btn"]'); }
-  get employeesTable() { return this.page.locator('[data-testid="employees-table"]'); }
+  get empNameInput() { return this.page.locator('#emp-name'); }
+  get empDepartmentSelect() { return this.page.locator('#emp-department'); }
+  get empStatusSelect() { return this.page.locator('#emp-status'); }
+  get addEmployeeBtn() { return this.page.getByRole('button', { name: /add employee/i }); }
+  get searchInput() { return this.page.locator('#search-input'); }
+  get searchBtn() { return this.page.getByRole('button', { name: /search/i }); }
+  get refreshBtn() { return this.page.getByRole('button', { name: /refresh/i }); }
+  get employeesTable() { return this.page.getByRole('table'); }
   get employeeAlert() { return this.page.locator('#employee-alert'); }
 
   // API Testing
-  get apiEndpointSelect() { return this.page.locator('[data-testid="api-endpoint-select"]'); }
-  get apiCallBtn() { return this.page.locator('[data-testid="api-call-btn"]'); }
-  get apiResponse() { return this.page.locator('[data-testid="api-response"]'); }
+  get apiEndpointSelect() { return this.page.locator('#api-endpoint'); }
+  get apiCallBtn() { return this.page.getByRole('button', { name: /call api/i }); }
+  get apiResponse() { return this.page.locator('#api-response'); }
   get apiAlert() { return this.page.locator('#api-alert'); }
 
   // Actions
