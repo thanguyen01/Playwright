@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 // Use local playground for reliable testing
 const PLAYGROUND_URL = 'file://' + process.cwd() + '/public/playground.html';
 
-test.describe('Playground - Login Form', () => {
+test.describe('@playground Playground - Login Form', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(PLAYGROUND_URL);
   });
@@ -51,7 +51,7 @@ test.describe('Playground - Login Form', () => {
   });
 });
 
-test.describe('Playground - Employee Table', () => {
+test.describe('@playground Playground - Employee Table', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(PLAYGROUND_URL);
   });
@@ -89,7 +89,7 @@ test.describe('Playground - Employee Table', () => {
   });
 });
 
-test.describe('Playground - Interactive Elements', () => {
+test.describe('@playground Playground - Interactive Elements', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(PLAYGROUND_URL);
   });
@@ -120,7 +120,7 @@ test.describe('Playground - Interactive Elements', () => {
   });
 });
 
-test.describe('Playground - Modal', () => {
+test.describe('@playground Playground - Modal', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(PLAYGROUND_URL);
   });
@@ -144,7 +144,7 @@ test.describe('Playground - Modal', () => {
   });
 });
 
-test.describe('Playground - Form Elements', () => {
+test.describe('@playground Playground - Form Elements', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(PLAYGROUND_URL);
   });
