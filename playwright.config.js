@@ -73,4 +73,7 @@ export default defineConfig({
 
   /* Exit early on catastrophic failures in CI */
   maxFailures: CI ? 10 : undefined,
+  
+  /* Global setup - runs once before all tests */
+  globalSetup: './tests/global-setup.js',
 });
