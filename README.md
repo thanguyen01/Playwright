@@ -5,21 +5,21 @@ A comprehensive, production-ready test automation framework built with [Playwrig
 ## 🚀 Features
 
 - **Page Object Model (POM)** - Maintainable and scalable test structure with BasePage pattern
-- **Custom Test Fixtures** - Extended Playwright fixtures including API helper and storage state management
+- **Custom Test Fixtures** - Extended Playwright fixtures including API client and page objects
 - **Multi-Browser Testing** - Run tests on Chromium, Firefox, and WebKit simultaneously
-- **API Testing Layer** - Built-in APIHelper utility for comprehensive API testing
+- **API Testing Layer** - APIClient utility for real HTTP requests (GET, POST, PUT, DELETE)
 - **Authentication Management** - Global setup/teardown with session storage and reuse
 - **Multiple Reporters** - HTML, JUnit/XML, and Allure reports configured together
-- **Test Organization** - Tag-based test filtering (@smoke, @regression, @critical)
-- **Test Data Management** - JSON-based test data with utility functions
-- **CI/CD Ready** - GitHub Actions workflow with multi-browser parallel execution
+- **Test Organization** - Tag-based test filtering (@smoke, @regression, @critical, @playground)
+- **CI/CD Ready** - GitHub Actions workflow with Node.js 24 support
 - **Environment Configuration** - dotenv integration for flexible configuration
 - **Screenshot & Video Capture** - Automatic capture on failures
 - **Retry Logic** - Smart retries: 2 in CI, 0 locally
+- **Plug-and-Play** - Reusable framework for any website
 
 ## 📋 Prerequisites
 
-- **Node.js** 18+ ([Download](https://nodejs.org/))
+- **Node.js** 20+ ([Download](https://nodejs.org/))
 - **npm** 8+ (comes with Node.js)
 - **Git** (optional, for version control)
 
@@ -73,427 +73,254 @@ Main configuration in `playwright.config.js`:
 - **workers**: 1 in CI, automatic otherwise
 - **reporters**: HTML, JUnit, and Allure
 - **projects**: Chromium, Firefox, WebKit
+- **globalSetup**: Authentication session management
 
 ## 📁 Project Structure
 
 ```
 .
 ├── pages/                      # Page Object Models
-│   ├── BasePage.js            # Base class with common methods
-│   ├── LoginPage.js           # Example page object
-│   └── ...
-├── fixtures/                   # Custom test fixtures
-│   └── customFixtures.js      # Extended @playwright/test fixtures
-├── utils/                      # Utility functions
-│   ├── APIHelper.js           # API testing helper
-│   └── helpers.js             # Common utilities and helpers
+│   ├── base.page.js           # Base class with common methods
+│   ├── home.page.js           # Home page object
+│   ├── login.page.js          # Login page object
+│   └── playground.page.js     # Playground page object (local testing)
 ├── tests/                      # Test files
-│   ├── example.spec.js        # Example tests
-│   ├── api.spec.js            # API tests
-│   └── fixtures.js            # Test fixtures
-├── test-data/                  # JSON test data
+│   ├── fixtures.js            # Custom test fixtures
+│   ├── example.spec.js        # Example UI tests
+│   ├── api.spec.js            # Real API tests
+│   ├── playground-pom.spec.js # Playground tests (POM pattern)
+│   ├── playground-auth.spec.js# Playground auth tests
+│   └── playground.spec.js     # Playground basic tests
+├── utils/                      # Utility functions
+│   └── APIClient.js           # API testing utility
+├── fixtures/                   # Test data files
 │   └── users.json             # User test data
+├── public/                     # Static files for local testing
+│   └── playground.html        # Interactive test playground
 ├── .auth/                      # Authentication storage (auto-generated)
 │   └── user.json              # Saved session state
+├── .github/workflows/          # CI/CD configuration
+│   └── tests.yml              # GitHub Actions workflow
 ├── playwright.config.js        # Playwright configuration
 ├── package.json                # Project dependencies
 ├── .env.example                # Environment variables template
-├── .gitignore                  # Git ignore file
-├── .github/workflows/          # CI/CD workflows
-│   └── tests.yml              # GitHub Actions workflow
 └── README.md                   # This file
 ```
 
-## 🧪 Running Tests
+## 🏃 Running Tests
 
-### Run All Tests
+### Basic Commands
 
 ```bash
+# Run all tests
 npm test
-```
 
-### Run Tests in Headed Mode
-
-```bash
+# Run tests in headed mode (visible browser)
 npm run test:headed
-```
 
-### Run Tests in UI Mode (Interactive)
-
-```bash
+# Run tests with UI mode
 npm run test:ui
-```
 
-### Debug Tests
-
-```bash
+# Run tests with debug mode
 npm run test:debug
+
+# Show HTML report
+npm run test:report
 ```
 
-### Run Smoke Tests Only
+### Browser-Specific Tests
 
 ```bash
+# Run on Chromium only
+npm run test:chrome
+
+# Run on Firefox only
+npm run test:firefox
+
+# Run on WebKit only
+npm run test:webkit
+```
+
+### Test Filtering by Tags
+
+```bash
+# Run smoke tests only
 npm run test:smoke
-```
 
-### Run Regression Tests Only
-
-```bash
+# Run regression tests only
 npm run test:regression
-```
 
-### Run Critical Tests Only
-
-```bash
+# Run critical tests only
 npm run test:critical
-```
 
-### Run Tests on Specific Browser
+# Run playground tests only
+npx playwright test --grep '@playground'
 
-```bash
-npm run test:chrome     # Chromium
-npm run test:firefox    # Firefox
-npm run test:webkit     # WebKit
-```
-
-### Run Tests Serially (No Parallelization)
-
-```bash
-npm run test:serial
+# Exclude playground tests from main suite
+npx playwright test --grep-invert '@playground'
 ```
 
 ## 📊 Reports
 
 ### HTML Report
-
+Automatically generated after test runs:
 ```bash
-npm run test:report
+npx playwright show-report
 ```
 
-Opens `playwright-report/index.html` in your default browser.
-
 ### Allure Report
-
-#### Generate and View Allure Report
-
 ```bash
+# Generate report
+npm run report:allure
+
+# Open report
 npm run report:allure:open
 ```
 
-#### Just Generate (without opening)
+### JUnit XML
+Generated at `test-results/junit.xml` for CI/CD integration.
 
-```bash
-npm run report:allure
-```
+## 🔌 API Testing
 
-#### JUnit Results
-
-Generated automatically at `test-results/junit.xml` - useful for CI/CD systems like Jenkins.
-
-## 🏗️ Creating Page Objects
-
-Extend `BasePage` to create page-specific objects:
+The framework includes a reusable APIClient utility for API testing:
 
 ```javascript
-import { BasePage } from "./BasePage.js";
+import { test, expect } from './fixtures.js';
 
-export class MyPage extends BasePage {
-  // Define selectors
-  get submitButton() {
-    return 'button[type="submit"]';
+test('should get employees', async ({ api }) => {
+  const response = await api.get('/Employee');
+  expect(response.status()).toBe(200);
+});
+```
+
+Available methods:
+- `api.get(endpoint)`
+- `api.post(endpoint, data)`
+- `api.put(endpoint, data)`
+- `api.patch(endpoint, data)`
+- `api.delete(endpoint)`
+
+## 🔐 Authentication
+
+Authentication is managed via global setup:
+1. Logs in once before all tests
+2. Saves session to `.auth/user.json`
+3. Injects session into each test via fixture
+
+No need to log in for every test!
+
+## 🎯 Page Object Model
+
+Example page object structure:
+
+```javascript
+// pages/login.page.js
+import { BasePage } from './base.page.js';
+
+export class LoginPage extends BasePage {
+  constructor(page) {
+    super(page);
+    this.usernameInput = page.getByLabel('Username');
+    this.passwordInput = page.getByLabel('Password');
+    this.signInButton = page.getByRole('button', { name: 'Sign In' });
   }
 
-  // Define methods
-  async submit() {
-    await this.click(this.submitButton);
+  async login(username, password) {
+    await this.usernameInput.fill(username);
+    await this.passwordInput.fill(password);
+    await this.signInButton.click();
   }
 }
 ```
 
-## ✍️ Writing Tests
+## 🚀 CI/CD
+
+GitHub Actions workflow automatically:
+- Runs on push/PR to main branches
+- Tests on all 3 browsers in parallel
+- Uploads HTML, JUnit, and Allure reports as artifacts
+- Deploys Allure report to GitHub Pages
+- Uses Node.js 24 (via FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true)
+
+## 🏷️ Test Tagging Strategy
+
+Tag your tests for better organization:
 
 ```javascript
-import { test, expect } from "../fixtures/customFixtures.js";
-import { MyPage } from "../pages/MyPage.js";
+test.describe('@smoke Critical Features', () => {
+  // Quick sanity checks
+});
 
-test.describe("My Tests @smoke", () => {
-  let myPage;
+test.describe('@regression Full Test Suite', () => {
+  // Comprehensive regression tests
+});
 
-  test.beforeEach(async ({ page }) => {
-    myPage = new MyPage(page);
-  });
+test.describe('@critical Must-Pass Tests', () => {
+  // Business-critical functionality
+});
 
-  test("should do something @smoke", async () => {
-    await myPage.submit();
-    expect(true).toBeTruthy();
-  });
+test.describe('@playground Local Testing', () => {
+  // Excluded from CI runs
 });
 ```
 
-## 🔐 Authentication
+## 🛠️ Maintenance
 
-Authentication is configured through environment variables and test fixtures:
-
-- **Credentials**: Set via `TEST_USERNAME` and `TEST_PASSWORD` env vars
-- **Session Storage**: Stored in `.auth/user.json`
-
-To force re-authentication, delete `.auth/user.json`:
+### Clean Up
 
 ```bash
-rm .auth/user.json
-```
-
-## 🌐 API Testing
-
-Use the `apiHelper` fixture for API testing:
-
-```javascript
-test("should fetch users", async ({ apiHelper }) => {
-  const response = await apiHelper.get("/api/users");
-  expect(response.status).toBe(200);
-  expect(Array.isArray(response.body)).toBeTruthy();
-});
-```
-
-### Supported Methods
-
-- `get(endpoint, options)`
-- `post(endpoint, data, options)`
-- `put(endpoint, data, options)`
-- `delete(endpoint, options)`
-- `patch(endpoint, data, options)`
-- `head(endpoint, options)`
-
-## 📝 Test Data Management
-
-### Load Test Data
-
-```javascript
-import { TestDataManager } from "../utils/helpers.js";
-
-const users = TestDataManager.loadTestData("users");
-```
-
-### Test Utilities
-
-```javascript
-import { TestUtils } from "../utils/helpers.js";
-
-// Generate random values
-TestUtils.generateRandomString(10);
-TestUtils.generateRandomEmail();
-TestUtils.generateRandomNumber(1, 100);
-
-// Date/Time utilities
-TestUtils.formatDate(new Date(), "YYYY-MM-DD");
-TestUtils.getTimestamp();
-
-// Retry with backoff
-await TestUtils.retryWithBackoff(() => asyncFunction());
-
-// Other utilities
-TestUtils.delay(1000);
-TestUtils.deepClone(obj);
-TestUtils.deepMerge(obj1, obj2);
-```
-
-## 🏷️ Test Tagging
-
-Tag tests for organized execution:
-
-```javascript
-test("should work @smoke", async () => {});
-test("should work @regression", async () => {});
-test("should work @critical", async () => {});
-test("should work @smoke @critical", async () => {
-  // This test will run with both smoke and critical
-});
-```
-
-Run specific tags:
-
-```bash
-npm run test:smoke       # @smoke
-npm run test:regression  # @regression
-npm run test:critical    # @critical
-```
-
-## 🧹 Cleanup
-
-### Clean Test Results and Reports
-
-```bash
+# Remove test results and reports
 npm run clean
-```
 
-Removes:
-
-- `test-results/`
-- `allure-results/`
-- `playwright-report/`
-- `.auth/`
-
-### Deep Clean (includes node_modules)
-
-```bash
+# Remove everything including node_modules
 npm run clean:all
 ```
 
-## 🚀 CI/CD Integration
-
-### GitHub Actions
-
-The framework includes a complete GitHub Actions workflow (`.github/workflows/tests.yml`) that:
-
-1. ✅ Runs tests on all 3 browsers in parallel
-2. ✅ Generates HTML, JUnit, and Allure reports
-3. ✅ Uploads artifacts for download
-4. ✅ Publishes Allure report to GitHub Pages
-5. ✅ Sends test summary to job summary
-
-**Required Secrets** (optional - uses defaults if not set):
-
-- `BASE_URL` - Application URL
-- `TEST_USERNAME` - Login username
-- `TEST_PASSWORD` - Login password
-
-### Running in CI
-
-The config automatically detects CI environment and:
-
-- Sets retries to 2
-- Uses 1 worker (no parallelization)
-- Fails on `test.only()`
-
-Set the `CI` environment variable:
+### Update Dependencies
 
 ```bash
-CI=true npm test
+npm update
+npx playwright install
 ```
 
-## 🐛 Debugging
+## 📝 Best Practices
 
-### Run Single Test
+1. **Use Page Object Model** - Keep selectors in one place
+2. **Use data-testid attributes** - More stable than CSS selectors
+3. **Tag your tests** - Makes filtering easier
+4. **Keep tests independent** - No test should depend on another
+5. **Use fixtures** - Leverage the custom fixtures for common operations
+6. **API over UI** - Use API calls for setup/teardown when possible
 
+## 🆘 Troubleshooting
+
+### Tests Fail Locally
+- Check `.env` configuration
+- Ensure application is running
+- Check network connectivity
+
+### Tests Fail in CI Only
+- Check for timing issues (increase timeouts)
+- Verify BASE_URL is accessible from CI runners
+- Check authentication flow
+
+### Browser Issues
 ```bash
-npx playwright test example.spec.js
+# Reinstall browsers
+npx playwright install --force-deps
 ```
-
-### Run Test with Specific Name
-
-```bash
-npx playwright test -g "should login"
-```
-
-### Debug Mode (Interactive Inspector)
-
-```bash
-npm run test:debug
-```
-
-### View Traces
-
-Traces are automatically captured on first retry. View them:
-
-```bash
-npx playwright show-trace test-results/trace.zip
-```
-
-## 📚 Best Practices
-
-### 1. **Selectors**
-
-- Use semantic selectors: `data-testid`, `name`, `placeholder`
-- Avoid fragile selectors: nth-child, hard-coded indices
-- Use locators when possible: `page.locator('...')`
-
-### 2. **Waits**
-
-- Use explicit waits: `waitForElement()`, `waitForNavigation()`
-- Avoid `page.waitForTimeout()` unless absolutely necessary
-- Set appropriate timeouts (default: 30s)
-
-### 3. **Test Organization**
-
-- One action per test when possible
-- Use `test.beforeEach()` for setup
-- Use `test.afterEach()` for cleanup
-- Group related tests in `test.describe()`
-
-### 4. **Assertions**
-
-- Be specific: `expect(value).toBe(exact)`
-- Avoid assertions after navigation (can be flaky)
-- Use custom matchers for common checks
-
-### 5. **Data Management**
-
-- Use test data files for complex scenarios
-- Generate unique data for tests: `TestUtils.generateRandomEmail()`
-- Clean up created data in `test.afterEach()` or `globalTeardown()`
-
-## 🔗 Useful Links
-
-- [Playwright Documentation](https://playwright.dev/)
-- [Playwright Test API](https://playwright.dev/docs/api/class-test)
-- [Allure Report](https://docs.qameta.io/allure/)
-- [Page Object Model](https://playwright.dev/docs/pom)
-
-## 📞 Support & Troubleshooting
-
-### Tests Not Running
-
-- Ensure Node.js 18+ is installed: `node --version`
-- Reinstall dependencies: `npm ci`
-- Reinstall Playwright browsers: `npx playwright install`
-
-### Authentication Issues
-
-- Check credentials in `.env` file
-- Delete `.auth/user.json` and re-run to force re-authentication
-
-### Report Generation Issues
-
-- For Allure: `npm install -g allure-commandline`
-- Check that test results exist: `ls allure-results/`
-- Verify Java is installed (required for Allure): `java --version`
-
-### CI/CD Issues
-
-- Check GitHub Actions logs in your repository
-- Verify secrets are set correctly
-- Ensure `.env.example` is committed to repo (`.env` should not be)
 
 ## 📄 License
 
-This project is open source and available under the MIT License.
+ISC
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please:
-
-1. Create a feature branch
-2. Make your changes
-3. Add tests for new functionality
-4. Submit a pull request
-
-## 📊 Test Statistics
-
-Track your test coverage and execution:
-
-- View HTML reports for detailed execution logs
-- Check JUnit XML for CI integration
-- Use Allure reports for trend analysis
-
-## 🎯 Next Steps
-
-1. ✅ Update selectors in page objects for your application
-2. ✅ Configure credentials in `.env`
-3. ✅ Write your first test using the examples as template
-4. ✅ Run tests locally: `npm test`
-5. ✅ Set up GitHub Actions secrets and enable workflow
-6. ✅ Integrate with your CI/CD pipeline
+1. Create feature branch
+2. Make changes
+3. Run tests
+4. Submit PR
 
 ---
 
-**Happy Testing! 🎉**
+**Built with ❤️ using Playwright**
