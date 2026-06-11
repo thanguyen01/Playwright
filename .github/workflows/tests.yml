@@ -25,6 +25,7 @@ jobs:
 
     strategy:
       fail-fast: false
+      max-parallel: 3  # Run all 3 browsers in parallel
       matrix:
         browser: [chromium, firefox, webkit]
 
