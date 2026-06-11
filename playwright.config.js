@@ -18,7 +18,7 @@ export default defineConfig({
   retries: CI ? 2 : 0,
   
   /* Workers configuration */
-  workers: CI ? 2 : undefined,  // Use 2 workers per browser in CI for parallel execution
+  workers: CI ? 1 : undefined,  // 1 worker per browser (matrix runs browsers in parallel)
   
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
