@@ -48,6 +48,7 @@ jobs:
         run: npx playwright test --project=${{ matrix.browser }} --grep-invert '@playground'
         env:
           CI: true
+          PLAYWRIGHT_WORKERS: 2  # Use 2 workers per browser for parallel execution within each browser job
 
       - name: Upload HTML Report
         if: always()
