@@ -8,6 +8,7 @@ on:
   schedule:
     # Run tests daily at 2 AM UTC
     - cron: "0 2 * * *"
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -133,3 +134,4 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### View Reports" >> $GITHUB_STEP_SUMMARY
           echo "- [Allure Report](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
+
