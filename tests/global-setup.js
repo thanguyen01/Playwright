@@ -16,11 +16,9 @@ async function globalSetup() {
       signal: AbortSignal.timeout(30000)
     });
     
-    if (response.ok) {
-      console.log(`✓ Server reachable: ${BASE_URL} (status: ${response.status})`);
-    } else {
-      throw new Error(`Server returned ${response.status}`);
-    }
+    // Any HTTP response means the server is reachable (even 5xx).
+    // Let the tests themselves catch application-level failures.
+    console.log(`✓ Server reachable: ${BASE_URL} (status: ${response.status})`);
   } catch (error) {
     console.error(`✗ Server unreachable: ${BASE_URL}`);
     console.error(`Error: ${error.message}`);
@@ -29,3 +27,4 @@ async function globalSetup() {
 }
 
 export default globalSetup;
+
